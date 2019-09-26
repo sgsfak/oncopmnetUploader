@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- java script required for interacting with the RESTful API -->
+    <script type="text/javascript" src="/site_media/jquery/js/jquery-1.6.1.min.js"></script>
+
+    <!-- page style -->
+    <style type='text/css'>
+    #formwrap {
+        line-height: 2em;
+        background: #eef;
+        margin: 10px;
+        padding: 10px;
+        height: 170px;
+        text-align: center;
+    }
+    body {
+        font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
+        font-size: 14px;
+    }
+    </style>
+
+    <script type='text/javascript'>
+        default_key = "";
+        pluginGET = "";
+
+        function readConfiguration() {
+            pluginGET = TB_plugin.fields;
+            $.each(pluginGET.config, function(key,val){
+                if (key == "upload_path"){
+                    document.getElementById("upload_path").value = val;
+                    //$("#upload_path").val(val);
+                }
+                else if(key == "access_key"){
+                    document.getElementById("access_key").value = val;
+                }
+                else if(key == "secret_key"){
+                    document.getElementById("secret_key").value = val;
+                }
+                else if(key == "server_host"){
+                    document.getElementById("server_host").value = val;
+                }
+            });
+            document.getElementById("description").innerHTML = pluginGET.description;
+        }
+        $(document).ready(function(){
+            readConfiguration();
+        });
+
+        //turn the html objects into json objects
+        $(function() {
+            $.fn.serializeObject = function(){
+                var o = {};
+                var a = this.serializeArray();
+                a = a.concat(
+                    jQuery('#pluginconfig input[type=checkbox]:not(:checked)').map(
+                        function() {
+                            return {"name": this.name, "value": "off"}
+                        }).get());
+
+                        console.log(a)
+                        $.each(a, function() {
+                            console.log(this.name+" : "+this.value);
+                            if (o[this.name] != null) {
+                                if (!o[this.name].push) {
+                                    o[this.name] = [o[this.name]];
+                                }
+                                o[this.name].push(this.value || '');
+                            } else {
+                                o[this.name] = this.value || '';
+                            }
+                        });
+                        return o;
+            };
+        });
+
+        //use the RESTful API to post the json objects to the plugin
+        $(function() {
+            $('#postbutton').click(function() {
+                // this form name "pluginconfig" should match the one used in the html page
+                obj =  $('#pluginconfig').serializeObject();
+                //use the data retreived from the GET and modify it only the config key is changed
+                pluginGET.config = obj;
+                pluginAPIJSON = JSON.stringify(pluginGET);
+                pluginURL = "/rundb/api/v1/plugin/" + TB_plugin.pk + "/?format=json";
+                $.ajax({
+                    type: 'PUT',
+                    url: pluginURL,
+                    contentType: "application/json; charset=utf-8",
+                    success: function () {parent.$.fn.colorbox.close();},
+                    data: pluginAPIJSON,
+                    dataType: "json"
+                });
+            });
+        });
+    </script>
+</head>
+
+<!-- set up the html page that the user interacts with -->
+<body>
+
+    <!-- this form id, in this case "pluginconfig", should match the one called in PUT java script -->
+    <form id="pluginconfig" align="center">
+        <div class="page-header">
+            <center><h1 align="center">oncopmnetUploader - Global Settings</h1>
+                <p id="description"></p>
+            </center>
+        </div>
+        <div id="formwrap">
+            <center><table align="center">
+                    <tr>
+                        <td align=right>Server: </td>
+                        <td><input size="50" id="server_host" name="server_host" value="s3.service.oncopmnet.gr"/></td>
+                    </tr>
+                    <tr>
+                        <td align=right>Destination Path: </td><td align=left>
+                            <input id="upload_path" size="100" name="upload_path" value="/workflow-inputs/samples/MIAK"/>
+                            <!-- <select id="upload_path" name="upload_path"><option value="select a destination">select a destination</option></select> -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align=right>Access Key:</td>
+                        <td><input size="50" id="access_key" name="access_key" value="ZOTJDEQF303H0NI3CAQ9"/></td>
+                    </tr>
+                    <tr>
+                        <td align=right>Secret Key:</td>
+                        <td><input size="80" id="secret_key" name="secret_key"/></td>
+                    </tr>
+            </table></center>
+
+        </div>
+    </form><p>
+    <center><input id="postbutton" type="submit" value="Save Configuration"></center>
+</body>
+</html>

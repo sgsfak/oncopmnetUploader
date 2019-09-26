@@ -1,0 +1,3 @@
+This is a custom plugin for Torrent Suite(tm) in order to allow the
+upload of Ion Torrent data (BAM files) to be uploaded to the onco-PMNet
+platform...
