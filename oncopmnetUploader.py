@@ -39,6 +39,11 @@ class oncopmnetUploader(IonPlugin):
         self.workdir = plugin_run['results_dir']
         self.plugin_dir = plugin_run['path']
 
+        run_date = self.startplugin_json['expmeta']['run_date'].
+            replace(":","_").replace("-", "_").
+            replace("T","_").replace("Z", "")
+        run_name = self.startplugin_json['expmeta']['run_name']
+
         ## TODO: check that the plugin has been configured properly
         ## we need `upload_path`, `access_key`, `secret_key`, and
         ## `server_host`
@@ -59,7 +64,6 @@ class oncopmnetUploader(IonPlugin):
             plugin_conf['access_key'],
             plugin_conf['secret_key'],
             plugin_conf['server_host'])
-        #printlog("Conf: " + json.dumps(env))
 
         self.upload_info = []
         first = True
@@ -67,9 +71,19 @@ class oncopmnetUploader(IonPlugin):
             self.generate_completion_html(first and 'Started' or 'Running')
             first = False
             bam_file = barcode_values['bam_filepath']
-            upload_path = "%s/%s/%s.bam" % (upload_folder, project, barcode_values['sample_id'])
+            upload_path = "%s/%s/%s/%s.bam" % (upload_folder, project, run_date, barcode_values['sample_id'])
+            ## add some metadata:
+            attrs = {
+                'aligned': barcode_values['aligned'],
+                'ref': barcode_values['reference'],
+                'run_date': run_date,
+                'run_name': run_name,
+                'read_count': barcode_values['read_count']
+            }
             printlog("Sending %s to %s\n" % (bam_file, upload_path))
-            p = subprocess.Popen([self.mc_command, "cp", bam_file, server_alias+"/"+upload_path], 
+            p = subprocess.Popen([self.mc_command, "cp", 
+                "--attr",  ";".join(k+"="+str(v) for (k,v) in attrs.iteritems()),
+                bam_file, server_alias+"/"+upload_path], 
                 cwd=self.workdir,
                 env=env)
             exit_code = p.wait()
