@@ -1,10 +1,10 @@
 ##  oncopmnetUploader
 
-This is a custom plugin for Torrent Suite<sup>TM</sup> in order to allow the upload of Ion Torrent data (BAM files) to be uploaded to the onco-PMNet platform.
+This is a custom plugin for Torrent Suite<sup>TM</sup> that supports the upload of Ion Torrent data (BAM files) to the onco-PMNet platform (or any other [Amazon S3-compatible](https://en.wikipedia.org/wiki/Amazon_S3) object store).
 
 ### Installation
 
-It is important to have this code in a folder named `oncopmnetUploader` and this will be the case if you clone this repository without specifiying a different local directory, e.g. you should just do:
+It is important to have this code in a folder named `oncopmnetUploader` and this will be the case if you clone this repository without specifying a different local directory, e.g. you should just do:
 
 ```bash
 git clone git@gitlab.precmed.iit.demokritos.gr:sgsfak/oncopmnetUploader.git 
