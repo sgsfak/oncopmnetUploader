@@ -7,7 +7,7 @@ This is a custom plugin for Torrent Suite<sup>TM</sup> that supports the upload 
 It is important to have this code in a folder named `oncopmnetUploader` and this will be the case if you clone this repository without specifying a different local directory, e.g. you should just do:
 
 ```bash
-git clone git@gitlab.precmed.iit.demokritos.gr:sgsfak/oncopmnetUploader.git 
+git clone git@gitlab.repository.oncopmnet.gr:sgsfak/oncopmnetUploader.git
 ```
 
 After that you need to package the newly created directory into a Zip file as described [here](https://ion-torrent-sdk.readthedocs.io/en/v5.10/plugin/getting_started.html#plugin-packaging). In  a Unix-like operating system you could issue the following command (assuming you are *not* inside the `oncopmnetUploader` directory):
@@ -51,7 +51,8 @@ You can use the `stat` command of the
 to check these Metadata values after the upload, e.g.
 
 ```bash
-mc stat 'precmed/workflow-inputs/.../2019_05_15_08_11_52/Q4DP-2019.bam'
+> mc stat 'precmed/workflow-inputs/.../2019_05_15_08_11_52/Q4DP-2019.bam'
+
 Name      : Q4DP-2019.bam
 Date      : 2019-11-06 00:17:51 EET
 Size      : 555 MiB
