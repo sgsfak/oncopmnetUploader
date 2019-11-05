@@ -37,3 +37,31 @@ After installation and configuration the plugin should be available to be select
 The following image depicts the information shown after running the plugin. The plugin creates the subfolders in the configured directory based on Run's date, Project, and Sample name.
 
 ![plugin results](img/results.png)
+
+The plugin also attaches the following metadata to the uploaded files:
+
+* `aligned`: True or False, depending on whether it's an aligned or unaligned BAM file
+* `ref`: The genome reference used if `aligned` is True
+* `run_date`: The datetime of the run
+* `run_name`: The (local) run name
+* `read_count`: The number of reads in the BAM file
+
+You can use the `stat` command of the 
+[Minio client](https://docs.min.io/docs/minio-client-complete-guide.html) 
+to check these Metadata values after the upload, e.g.
+
+```bash
+mc stat 'precmed/workflow-inputs/.../2019_05_15_08_11_52/Q4DP-2019.bam'
+Name      : Q4DP-2019.bam
+Date      : 2019-11-06 00:17:51 EET
+Size      : 555 MiB
+ETag      : aadeec657b97f056ea0b1a91eea851c9-5
+Type      : file
+Metadata  :
+  Content-Type         : application/gzip
+  X-Amz-Meta-Aligned   : False
+  X-Amz-Meta-Run-Date  : 2019_05_15_08_11_52
+  X-Amz-Meta-Ref       :
+  X-Amz-Meta-Run-Name  : R_2019_05_15_11_09_26_user_ARIADNE-23-ColonLungV2
+  X-Amz-Meta-Read-Count: 1277415
+```

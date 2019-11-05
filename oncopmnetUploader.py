@@ -21,7 +21,7 @@ class oncopmnetUploader(IonPlugin):
     This plugin automates the upload of BAM files to the 
     backend storage platform of the OncoPMNet
     """
-    version = "1.0.0.0"
+    version = "1.0.1.0"
     author = "ssfak@ics.forth.gr"
 
     mc_command = "/usr/local/bin/mc"
@@ -39,8 +39,8 @@ class oncopmnetUploader(IonPlugin):
         self.workdir = plugin_run['results_dir']
         self.plugin_dir = plugin_run['path']
 
-        run_date = self.startplugin_json['expmeta']['run_date'].
-            replace(":","_").replace("-", "_").
+        run_date = self.startplugin_json['expmeta']['run_date']. \
+            replace(":","_").replace("-", "_"). \
             replace("T","_").replace("Z", "")
         run_name = self.startplugin_json['expmeta']['run_name']
 
@@ -71,7 +71,14 @@ class oncopmnetUploader(IonPlugin):
             self.generate_completion_html(first and 'Started' or 'Running')
             first = False
             bam_file = barcode_values['bam_filepath']
-            upload_path = "%s/%s/%s/%s.bam" % (upload_folder, project, run_date, barcode_values['sample_id'])
+            # Try to get the sample name from `sample_id` or `sample` or,
+            # if all else fails, the barcode name:
+            sample_name = barcode_values.get('sample_id', "")
+            if sample_name == "":
+                sample_name = barcode_values.get('sample', "")
+            if sample_name == "":
+                sample_name = barcode_name
+            upload_path = "%s/%s/%s/%s.bam" % (upload_folder, project, run_date, sample_name)
             ## add some metadata:
             attrs = {
                 'aligned': barcode_values['aligned'],
