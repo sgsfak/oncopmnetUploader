@@ -21,7 +21,7 @@ class oncopmnetUploader(IonPlugin):
     This plugin automates the upload of BAM files to the 
     backend storage platform of the OncoPMNet
     """
-    version = "1.0.1.0"
+    version = "1.0.1.1"
     author = "ssfak@ics.forth.gr"
 
     mc_command = "/usr/local/bin/mc"
@@ -36,6 +36,9 @@ class oncopmnetUploader(IonPlugin):
         plugin_run = self.startplugin_json['runinfo']['plugin']
         plugin_conf = plugin_run['pluginconfig']
         project = self.startplugin_json['expmeta']['project']
+        chip_type = self.startplugin_json['expmeta']['chiptype']
+        run_flows = self.startplugin_json['expmeta']['run_flows']
+        system_type = self.startplugin_json['runinfo']['systemType']
         self.workdir = plugin_run['results_dir']
         self.plugin_dir = plugin_run['path']
 
@@ -85,7 +88,11 @@ class oncopmnetUploader(IonPlugin):
                 'ref': barcode_values['reference'],
                 'run_date': run_date,
                 'run_name': run_name,
-                'read_count': barcode_values['read_count']
+                'read_count': barcode_values['read_count'],
+                'system_type': system_type,
+                'chip_type': chip_type,
+                'run_flows': run_flows,
+                'platform': 'IonTorrent'
             }
             printlog("Sending %s to %s\n" % (bam_file, upload_path))
             p = subprocess.Popen([self.mc_command, "cp", 

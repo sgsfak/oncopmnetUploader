@@ -28,8 +28,6 @@ The following screenshot shows the options available. You need to set the S3 ser
 
 !["global" configuration](img/config.png)
 
-
-
 ### Execution
 
 After installation and configuration the plugin should be available to be selected to run in a specific "Run". The plugin should take automatically the run information and upload all the associated BAM files in the server configured.
@@ -45,6 +43,10 @@ The plugin also attaches the following metadata to the uploaded files:
 * `run_date`: The datetime of the run
 * `run_name`: The (local) run name
 * `read_count`: The number of reads in the BAM file
+* `system_type`: The type of sequencer (e.g. 'pgm') used in the run
+* `chip_type`: The chip which was used to do the run (e.g. '540')
+* `run_flows`: The number of flows used in the run
+* `platform`: This is always 'IonTorrent'
 
 You can use the `stat` command of the 
 [Minio client](https://docs.min.io/docs/minio-client-complete-guide.html) 
@@ -60,9 +62,13 @@ ETag      : aadeec657b97f056ea0b1a91eea851c9-5
 Type      : file
 Metadata  :
   Content-Type         : application/gzip
-  X-Amz-Meta-Aligned   : False
-  X-Amz-Meta-Run-Date  : 2019_05_15_08_11_52
-  X-Amz-Meta-Ref       :
+  X-Amz-Meta-Aligned   : True
+  X-Amz-Meta-Platform   : IonTorrent
+  X-Amz-Meta-Run-Date   : 2019_05_15_08_11_52
+  X-Amz-Meta-Chip-Type  : 520
+  X-Amz-Meta-System-Type: S5XL
+  X-Amz-Meta-Run-Flows  : 400
+  X-Amz-Meta-Read-Count : 1423248
+  X-Amz-Meta-Ref       : hg19
   X-Amz-Meta-Run-Name  : R_2019_05_15_11_09_26_user_ARIADNE-23-ColonLungV2
-  X-Amz-Meta-Read-Count: 1277415
 ```
